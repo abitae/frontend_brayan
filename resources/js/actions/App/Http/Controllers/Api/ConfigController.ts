@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\Api\ConfigController::index
- * @see app/Http/Controllers/Api/ConfigController.php:16
+ * @see app/Http/Controllers/Api/ConfigController.php:17
  * @route '/api/config'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::index
- * @see app/Http/Controllers/Api/ConfigController.php:16
+ * @see app/Http/Controllers/Api/ConfigController.php:17
  * @route '/api/config'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::index
- * @see app/Http/Controllers/Api/ConfigController.php:16
+ * @see app/Http/Controllers/Api/ConfigController.php:17
  * @route '/api/config'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\Api\ConfigController::index
- * @see app/Http/Controllers/Api/ConfigController.php:16
+ * @see app/Http/Controllers/Api/ConfigController.php:17
  * @route '/api/config'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\Api\ConfigController::index
- * @see app/Http/Controllers/Api/ConfigController.php:16
+ * @see app/Http/Controllers/Api/ConfigController.php:17
  * @route '/api/config'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\Api\ConfigController::index
- * @see app/Http/Controllers/Api/ConfigController.php:16
+ * @see app/Http/Controllers/Api/ConfigController.php:17
  * @route '/api/config'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\Api\ConfigController::index
- * @see app/Http/Controllers/Api/ConfigController.php:16
+ * @see app/Http/Controllers/Api/ConfigController.php:17
  * @route '/api/config'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\Api\ConfigController::update
- * @see app/Http/Controllers/Api/ConfigController.php:42
+ * @see app/Http/Controllers/Api/ConfigController.php:43
  * @route '/api/config'
  */
 export const update = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +94,7 @@ update.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::update
- * @see app/Http/Controllers/Api/ConfigController.php:42
+ * @see app/Http/Controllers/Api/ConfigController.php:43
  * @route '/api/config'
  */
 update.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ update.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::update
- * @see app/Http/Controllers/Api/ConfigController.php:42
+ * @see app/Http/Controllers/Api/ConfigController.php:43
  * @route '/api/config'
  */
 update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +113,7 @@ update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Api\ConfigController::update
- * @see app/Http/Controllers/Api/ConfigController.php:42
+ * @see app/Http/Controllers/Api/ConfigController.php:43
  * @route '/api/config'
  */
     const updateForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -123,7 +123,7 @@ update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Api\ConfigController::update
- * @see app/Http/Controllers/Api/ConfigController.php:42
+ * @see app/Http/Controllers/Api/ConfigController.php:43
  * @route '/api/config'
  */
         updateForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -134,7 +134,7 @@ update.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     update.form = updateForm
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadLogo
- * @see app/Http/Controllers/Api/ConfigController.php:115
+ * @see app/Http/Controllers/Api/ConfigController.php:116
  * @route '/api/config/upload-logo'
  */
 export const uploadLogo = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -149,7 +149,7 @@ uploadLogo.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadLogo
- * @see app/Http/Controllers/Api/ConfigController.php:115
+ * @see app/Http/Controllers/Api/ConfigController.php:116
  * @route '/api/config/upload-logo'
  */
 uploadLogo.url = (options?: RouteQueryOptions) => {
@@ -158,7 +158,7 @@ uploadLogo.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadLogo
- * @see app/Http/Controllers/Api/ConfigController.php:115
+ * @see app/Http/Controllers/Api/ConfigController.php:116
  * @route '/api/config/upload-logo'
  */
 uploadLogo.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -168,7 +168,7 @@ uploadLogo.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadLogo
- * @see app/Http/Controllers/Api/ConfigController.php:115
+ * @see app/Http/Controllers/Api/ConfigController.php:116
  * @route '/api/config/upload-logo'
  */
     const uploadLogoForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -178,7 +178,7 @@ uploadLogo.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadLogo
- * @see app/Http/Controllers/Api/ConfigController.php:115
+ * @see app/Http/Controllers/Api/ConfigController.php:116
  * @route '/api/config/upload-logo'
  */
         uploadLogoForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -189,7 +189,7 @@ uploadLogo.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     uploadLogo.form = uploadLogoForm
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadBanner
- * @see app/Http/Controllers/Api/ConfigController.php:128
+ * @see app/Http/Controllers/Api/ConfigController.php:129
  * @route '/api/config/upload-banner'
  */
 export const uploadBanner = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -204,7 +204,7 @@ uploadBanner.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadBanner
- * @see app/Http/Controllers/Api/ConfigController.php:128
+ * @see app/Http/Controllers/Api/ConfigController.php:129
  * @route '/api/config/upload-banner'
  */
 uploadBanner.url = (options?: RouteQueryOptions) => {
@@ -213,7 +213,7 @@ uploadBanner.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadBanner
- * @see app/Http/Controllers/Api/ConfigController.php:128
+ * @see app/Http/Controllers/Api/ConfigController.php:129
  * @route '/api/config/upload-banner'
  */
 uploadBanner.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -223,7 +223,7 @@ uploadBanner.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadBanner
- * @see app/Http/Controllers/Api/ConfigController.php:128
+ * @see app/Http/Controllers/Api/ConfigController.php:129
  * @route '/api/config/upload-banner'
  */
     const uploadBannerForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -233,7 +233,7 @@ uploadBanner.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadBanner
- * @see app/Http/Controllers/Api/ConfigController.php:128
+ * @see app/Http/Controllers/Api/ConfigController.php:129
  * @route '/api/config/upload-banner'
  */
         uploadBannerForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -244,7 +244,7 @@ uploadBanner.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     uploadBanner.form = uploadBannerForm
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadBannerBg
- * @see app/Http/Controllers/Api/ConfigController.php:141
+ * @see app/Http/Controllers/Api/ConfigController.php:142
  * @route '/api/config/upload-banner-bg'
  */
 export const uploadBannerBg = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -259,7 +259,7 @@ uploadBannerBg.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadBannerBg
- * @see app/Http/Controllers/Api/ConfigController.php:141
+ * @see app/Http/Controllers/Api/ConfigController.php:142
  * @route '/api/config/upload-banner-bg'
  */
 uploadBannerBg.url = (options?: RouteQueryOptions) => {
@@ -268,7 +268,7 @@ uploadBannerBg.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadBannerBg
- * @see app/Http/Controllers/Api/ConfigController.php:141
+ * @see app/Http/Controllers/Api/ConfigController.php:142
  * @route '/api/config/upload-banner-bg'
  */
 uploadBannerBg.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -278,7 +278,7 @@ uploadBannerBg.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
 
     /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadBannerBg
- * @see app/Http/Controllers/Api/ConfigController.php:141
+ * @see app/Http/Controllers/Api/ConfigController.php:142
  * @route '/api/config/upload-banner-bg'
  */
     const uploadBannerBgForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -288,7 +288,7 @@ uploadBannerBg.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
 
             /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadBannerBg
- * @see app/Http/Controllers/Api/ConfigController.php:141
+ * @see app/Http/Controllers/Api/ConfigController.php:142
  * @route '/api/config/upload-banner-bg'
  */
         uploadBannerBgForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -299,7 +299,7 @@ uploadBannerBg.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => 
     uploadBannerBg.form = uploadBannerBgForm
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadAboutImage
- * @see app/Http/Controllers/Api/ConfigController.php:154
+ * @see app/Http/Controllers/Api/ConfigController.php:155
  * @route '/api/config/upload-about-image'
  */
 export const uploadAboutImage = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -314,7 +314,7 @@ uploadAboutImage.definition = {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadAboutImage
- * @see app/Http/Controllers/Api/ConfigController.php:154
+ * @see app/Http/Controllers/Api/ConfigController.php:155
  * @route '/api/config/upload-about-image'
  */
 uploadAboutImage.url = (options?: RouteQueryOptions) => {
@@ -323,7 +323,7 @@ uploadAboutImage.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadAboutImage
- * @see app/Http/Controllers/Api/ConfigController.php:154
+ * @see app/Http/Controllers/Api/ConfigController.php:155
  * @route '/api/config/upload-about-image'
  */
 uploadAboutImage.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -333,7 +333,7 @@ uploadAboutImage.post = (options?: RouteQueryOptions): RouteDefinition<'post'> =
 
     /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadAboutImage
- * @see app/Http/Controllers/Api/ConfigController.php:154
+ * @see app/Http/Controllers/Api/ConfigController.php:155
  * @route '/api/config/upload-about-image'
  */
     const uploadAboutImageForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -343,7 +343,7 @@ uploadAboutImage.post = (options?: RouteQueryOptions): RouteDefinition<'post'> =
 
             /**
 * @see \App\Http\Controllers\Api\ConfigController::uploadAboutImage
- * @see app/Http/Controllers/Api/ConfigController.php:154
+ * @see app/Http/Controllers/Api/ConfigController.php:155
  * @route '/api/config/upload-about-image'
  */
         uploadAboutImageForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

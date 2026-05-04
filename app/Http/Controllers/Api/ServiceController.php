@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Support\PublicAssetUrl;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ServiceController extends Controller
 {
@@ -17,7 +17,7 @@ class ServiceController extends Controller
             'title' => $s->title,
             'description' => $s->description,
             'icon_type' => $s->icon_type,
-            'image_url' => $s->image_url,
+            'image_url' => PublicAssetUrl::normalize($s->image_url),
         ];
     }
 
@@ -74,7 +74,7 @@ class ServiceController extends Controller
         $ext = $file->getClientOriginalExtension();
         $name = 'service_'.$service->id.'_'.time().'.'.strtolower($ext);
         $path = $file->storeAs('uploads', $name, 'public');
-        $url = Storage::disk('public')->url($path);
+        $url = PublicAssetUrl::fromPublicDiskPath($request, $path);
 
         $service->update(['image_url' => $url]);
 

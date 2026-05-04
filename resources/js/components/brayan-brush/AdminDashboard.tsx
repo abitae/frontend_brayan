@@ -1,19 +1,7 @@
 import Swal from 'sweetalert2';
 import { useState, useEffect } from 'react';
-import { Link, router } from '@inertiajs/react';
-import {
-  Ban,
-  Bot,
-  Building2,
-  FileText,
-  LogOut,
-  MapPin,
-  Palette,
-  Receipt,
-  Route,
-  Wrench,
-} from 'lucide-react';
-import { logout } from '@/routes';
+import { router } from '@inertiajs/react';
+import AdminWebSidebar, { isAdminWebTabId, type AdminWebTabId } from '@/components/brayan-brush/AdminWebSidebar';
 import {
   createPricingRoute,
   createProhibitedCategory,
@@ -48,6 +36,7 @@ import type {
 const ICON_TYPES = ['Box', 'Home', 'Package'] as const;
 
 interface AdminDashboardProps {
+  initialTab?: string;
   config: SiteConfig;
   services: ServiceItem[];
   prohibitedCategories: ProhibitedCategoryAdmin[];
@@ -56,13 +45,16 @@ interface AdminDashboardProps {
 }
 
 export default function AdminDashboard({
+  initialTab,
   config,
   services: initialServices,
   prohibitedCategories: initialProhibited,
   quotes: initialQuotes,
   pricingRoutes: initialPricingRoutes,
 }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState('branding');
+  const [activeTab, setActiveTab] = useState<AdminWebTabId>(() =>
+    isAdminWebTabId(initialTab) ? initialTab : 'branding'
+  );
   const [localConfig, setLocalConfig] = useState(config);
   const [localServices, setLocalServices] = useState<ServiceItem[]>(initialServices);
   const [localProhibited, setLocalProhibited] = useState<ProhibitedCategoryAdmin[]>(initialProhibited);
@@ -91,6 +83,24 @@ export default function AdminDashboard({
   useEffect(() => {
     setLocalConfig(config);
   }, [config]);
+
+  useEffect(() => {
+    if (isAdminWebTabId(initialTab)) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
+
+  /** Solo estado local + URL (sin nueva visita Inertia): evita errores tipo "reading 'payload'" si la respuesta no es JSON Inertia. */
+  const goToTab = (id: AdminWebTabId) => {
+    setActiveTab(id);
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', id);
+      window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
+    } catch {
+      //
+    }
+  };
   useEffect(() => {
     setLocalServices(initialServices);
   }, [initialServices]);
@@ -151,7 +161,7 @@ export default function AdminDashboard({
       await updateConfig(localConfig);
       Swal.fire({
         icon: 'success',
-        text: 'Página Nosotros guardada.',
+        text: 'Cambios en Nosotros guardados.',
         toast: true,
         position: 'top-end',
         timer: 3000,
@@ -178,7 +188,7 @@ export default function AdminDashboard({
       await updateConfig(localConfig);
       Swal.fire({
         icon: 'success',
-        text: 'Página Agencias guardada.',
+        text: 'Cambios en Agencias guardados.',
         toast: true,
         position: 'top-end',
         timer: 3000,
@@ -226,7 +236,16 @@ export default function AdminDashboard({
     }));
   };
 
-  const removeAgencyRow = (index: number) => {
+  const removeAgencyRow = async (index: number) => {
+    const res = await Swal.fire({
+      title: '¿Eliminar agencia?',
+      text: 'Dejará de mostrarse en /agencias al pulsar «Guardar Agencias».',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    });
+    if (!res.isConfirmed) return;
     setLocalConfig((c) => ({
       ...c,
       agencies_list: (c.agencies_list ?? []).filter((_, i) => i !== index),
@@ -450,106 +469,52 @@ export default function AdminDashboard({
     <div className="min-h-screen bg-slate-100 text-slate-900 p-6 md:p-12 pt-28">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row gap-12">
-          <aside className="md:w-72 shrink-0 flex flex-col rounded-2xl bg-white border border-slate-200 shadow-sm overflow-hidden h-fit">
-            <div className="p-5 border-b border-slate-100 bg-slate-50/80">
-              <h2 className="text-[11px] font-black text-slate-500 uppercase tracking-widest">
-                Administración Web
-              </h2>
-            </div>
-            <nav className="p-3 flex flex-col gap-1 overflow-y-auto">
-              <span className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                Contenido
-              </span>
-              {[
-                { id: 'branding', label: 'Branding & Media', Icon: Palette },
-                { id: 'servicios', label: 'Servicios', Icon: Wrench },
-                { id: 'nosotros', label: 'Página Nosotros', Icon: Building2 },
-                { id: 'agencias', label: 'Página Agencias', Icon: MapPin },
-              ].map((tab) => {
-                const Icon = tab.Icon;
-                const active = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                      active
-                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                        : 'text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5 shrink-0 opacity-90" />
-                    {tab.label}
-                  </button>
-                );
-              })}
-              <span className="px-3 py-2 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                Comercial
-              </span>
-              {[
-                { id: 'precios', label: 'Precios por ruta', Icon: Route },
-                { id: 'cotizador', label: 'Cotizador', Icon: FileText },
-                { id: 'cotizaciones', label: 'Solicitudes de cotización', Icon: Receipt },
-              ].map((tab) => {
-                const Icon = tab.Icon;
-                const active = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                      active
-                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                        : 'text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5 shrink-0 opacity-90" />
-                    {tab.label}
-                  </button>
-                );
-              })}
-              <span className="px-3 py-2 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                Configuración
-              </span>
-              {[
-                { id: 'prohibiciones', label: 'Prohibiciones', Icon: Ban },
-                { id: 'gemini', label: 'Asistente IA', Icon: Bot },
-              ].map((tab) => {
-                const Icon = tab.Icon;
-                const active = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                      active
-                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
-                        : 'text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    <Icon className="w-5 h-5 shrink-0 opacity-90" />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </nav>
-            <div className="p-3 mt-auto border-t border-slate-100 bg-slate-50/50">
-              <Link
-                href={logout().url}
-                method="post"
-                as="button"
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-rose-50 hover:text-rose-700 transition-all"
-              >
-                <LogOut className="w-5 h-5 shrink-0" />
-                Cerrar sesión
-              </Link>
-            </div>
-          </aside>
+          <AdminWebSidebar activeTab={activeTab} onSelectTab={goToTab} />
 
           <main className="flex-grow bg-white border border-slate-200 rounded-[40px] p-8 md:p-12 shadow-sm">
+            <header className="mb-10 pb-8 border-b border-slate-100">
+              <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2">/admin</p>
+              <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Panel administrativo</h2>
+              <p className="text-slate-600 mt-3 text-sm md:text-base max-w-3xl leading-relaxed">
+                Incluye la administración de las páginas públicas <strong>Nosotros</strong> y <strong>Agencias</strong>{' '}
+                (textos, imagen destacada y listado de sedes), junto a Branding y Servicios en el menú lateral{' '}
+                <strong>Contenido</strong>. También tienes precios, cotizaciones y más.
+              </p>
+              <div className="flex flex-wrap gap-2 mt-5">
+                <button
+                  type="button"
+                  onClick={() => goToTab('nosotros')}
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all border-2 ${
+                    activeTab === 'nosotros'
+                      ? 'border-emerald-600 bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                      : 'border-emerald-200 bg-emerald-50 text-emerald-900 hover:bg-emerald-100'
+                  }`}
+                >
+                  <span className="text-base leading-none" aria-hidden>
+                    🏢
+                  </span>
+                  Nosotros
+                </button>
+                <button
+                  type="button"
+                  onClick={() => goToTab('agencias')}
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all border-2 ${
+                    activeTab === 'agencias'
+                      ? 'border-emerald-600 bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+                      : 'border-emerald-200 bg-emerald-50 text-emerald-900 hover:bg-emerald-100'
+                  }`}
+                >
+                  <span className="text-base leading-none" aria-hidden>
+                    📍
+                  </span>
+                  Agencias
+                </button>
+              </div>
+              <p className="text-[11px] text-slate-400 mt-4 font-medium">
+                Enlace directo: <code className="text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">/admin?tab=nosotros</code>{' '}
+                · <code className="text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">/admin?tab=agencias</code>
+              </p>
+            </header>
             {activeTab === 'branding' && (
               <div className="space-y-10">
                 <h3 className="text-2xl font-black mb-8">Gestión de Identidad</h3>
@@ -782,7 +747,12 @@ export default function AdminDashboard({
 
             {activeTab === 'nosotros' && (
               <div className="space-y-8">
-                <h3 className="text-2xl font-black">Página Nosotros</h3>
+                <h3 className="text-2xl font-black">Nosotros</h3>
+                <div className="rounded-2xl border border-emerald-200 bg-emerald-50/80 px-4 py-3 text-sm text-emerald-900">
+                  <strong className="font-black">Página pública:</strong> todo lo que edites aquí se muestra en la ruta{' '}
+                  <code className="rounded bg-white px-1.5 py-0.5 text-xs font-mono">/nosotros</code>. Pulsa «Guardar
+                  Nosotros» para publicar cambios.
+                </div>
                 <p className="text-sm text-slate-600">
                   Título en tres partes (la parte central se muestra en verde). En los párrafos puedes usar{' '}
                   <code className="text-xs bg-slate-100 px-1 rounded">{'{{empresa}}'}</code> para insertar el nombre de
@@ -863,14 +833,20 @@ export default function AdminDashboard({
                   disabled={saving}
                   className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold disabled:opacity-50"
                 >
-                  {saving ? 'Guardando…' : 'Guardar página Nosotros'}
+                  {saving ? 'Guardando…' : 'Guardar Nosotros'}
                 </button>
               </div>
             )}
 
             {activeTab === 'agencias' && (
               <div className="space-y-8">
-                <h3 className="text-2xl font-black">Página Agencias</h3>
+                <h3 className="text-2xl font-black">Agencias</h3>
+                <div className="rounded-2xl border border-emerald-200 bg-emerald-50/80 px-4 py-3 text-sm text-emerald-900">
+                  <strong className="font-black">Página pública:</strong> textos de cabecera y CTA, y cada tarjeta de sede,
+                  se muestran en <code className="rounded bg-white px-1.5 py-0.5 text-xs font-mono">/agencias</code>.{' '}
+                  <strong>Agregar</strong> crea una nueva tarjeta; edita los campos para modificar;{' '}
+                  <strong>Eliminar</strong> quita la sede del listado. Confirma con «Guardar Agencias».
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Título principal</label>
@@ -927,15 +903,17 @@ export default function AdminDashboard({
                     </button>
                   </div>
                   {(localConfig.agencies_list ?? []).map((agency, index) => (
-                    <div key={agency.id} className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
+                    <div key={`${agency.id}-${index}`} className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
                       <div className="flex justify-between items-center gap-2">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase">Agencia {index + 1}</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase">
+                          Editar agencia {index + 1}
+                        </span>
                         <button
                           type="button"
                           onClick={() => removeAgencyRow(index)}
-                          className="text-xs font-bold text-rose-500 hover:underline"
+                          className="text-xs font-bold text-rose-600 hover:underline"
                         >
-                          Quitar
+                          Eliminar
                         </button>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1000,7 +978,7 @@ export default function AdminDashboard({
                   disabled={saving}
                   className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold disabled:opacity-50"
                 >
-                  {saving ? 'Guardando…' : 'Guardar página Agencias'}
+                  {saving ? 'Guardando…' : 'Guardar Agencias'}
                 </button>
               </div>
             )}

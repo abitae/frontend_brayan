@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\SiteConfig;
+use App\Support\PublicAssetUrl;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -39,7 +40,7 @@ class HandleInertiaRequests extends Middleware
         $siteConfig = null;
         try {
             $config = SiteConfig::default();
-            $siteConfig = [
+            $siteConfig = PublicAssetUrl::normalizeSiteMediaUrls([
                 'company_name' => $config->company_name,
                 'logo_text' => $config->logo_text,
                 'hero_title' => $config->hero_title,
@@ -49,7 +50,7 @@ class HandleInertiaRequests extends Middleware
                 'banner_url' => $config->banner_url,
                 'banner_bg_url' => $config->banner_bg_url,
                 ...$config->resolvedPageContent(),
-            ];
+            ]);
         } catch (\Throwable) {
             // Tables may not exist yet during migrations
         }

@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\BrayanBrush\AdminController::__invoke
- * @see app/Http/Controllers/BrayanBrush/AdminController.php:16
+ * @see app/Http/Controllers/BrayanBrush/AdminController.php:22
  * @route '/admin'
  */
 const AdminController = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ AdminController.definition = {
 
 /**
 * @see \App\Http\Controllers\BrayanBrush\AdminController::__invoke
- * @see app/Http/Controllers/BrayanBrush/AdminController.php:16
+ * @see app/Http/Controllers/BrayanBrush/AdminController.php:22
  * @route '/admin'
  */
 AdminController.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ AdminController.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\BrayanBrush\AdminController::__invoke
- * @see app/Http/Controllers/BrayanBrush/AdminController.php:16
+ * @see app/Http/Controllers/BrayanBrush/AdminController.php:22
  * @route '/admin'
  */
 AdminController.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ AdminController.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => (
 })
 /**
 * @see \App\Http\Controllers\BrayanBrush\AdminController::__invoke
- * @see app/Http/Controllers/BrayanBrush/AdminController.php:16
+ * @see app/Http/Controllers/BrayanBrush/AdminController.php:22
  * @route '/admin'
  */
 AdminController.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ AdminController.head = (options?: RouteQueryOptions): RouteDefinition<'head'> =>
 
     /**
 * @see \App\Http\Controllers\BrayanBrush\AdminController::__invoke
- * @see app/Http/Controllers/BrayanBrush/AdminController.php:16
+ * @see app/Http/Controllers/BrayanBrush/AdminController.php:22
  * @route '/admin'
  */
     const AdminControllerForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ AdminController.head = (options?: RouteQueryOptions): RouteDefinition<'head'> =>
 
             /**
 * @see \App\Http\Controllers\BrayanBrush\AdminController::__invoke
- * @see app/Http/Controllers/BrayanBrush/AdminController.php:16
+ * @see app/Http/Controllers/BrayanBrush/AdminController.php:22
  * @route '/admin'
  */
         AdminControllerForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ AdminController.head = (options?: RouteQueryOptions): RouteDefinition<'head'> =>
         })
             /**
 * @see \App\Http\Controllers\BrayanBrush\AdminController::__invoke
- * @see app/Http/Controllers/BrayanBrush/AdminController.php:16
+ * @see app/Http/Controllers/BrayanBrush/AdminController.php:22
  * @route '/admin'
  */
         AdminControllerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

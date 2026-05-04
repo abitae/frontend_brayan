@@ -10,6 +10,7 @@ import type {
 } from '@/api/brayan-api';
 
 interface AdminProps {
+  initialAdminTab?: string;
   config: SiteConfig;
   services: ServiceItem[];
   prohibitedCategories: ProhibitedCategoryAdmin[];
@@ -17,11 +18,19 @@ interface AdminProps {
   pricingRoutes: PricingRouteItem[];
 }
 
-export default function Admin({ config, services, prohibitedCategories, quotes, pricingRoutes }: AdminProps) {
+export default function Admin({
+  initialAdminTab,
+  config,
+  services,
+  prohibitedCategories,
+  quotes,
+  pricingRoutes,
+}: AdminProps) {
   return (
     <BrayanBrushLayout>
       <Head title="Panel Administrativo - Brayan Brush" />
       <AdminDashboard
+        initialTab={initialAdminTab}
         config={config}
         services={services}
         prohibitedCategories={prohibitedCategories}

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\PublicAssetUrl;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -25,7 +26,7 @@ class Service extends Model
             'title' => $s->title,
             'description' => $s->description,
             'icon_type' => $s->icon_type,
-            'image_url' => $s->image_url,
+            'image_url' => PublicAssetUrl::normalize($s->image_url),
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\SiteConfig;
+use App\Support\PublicAssetUrl;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +18,7 @@ class ConfigController extends Controller
     {
         $config = SiteConfig::default();
 
-        $payload = [
+        $payload = PublicAssetUrl::normalizeSiteMediaUrls([
             'company_name' => $config->company_name,
             'logo_text' => $config->logo_text,
             'hero_title' => $config->hero_title,
@@ -27,7 +28,7 @@ class ConfigController extends Controller
             'banner_url' => $config->banner_url,
             'banner_bg_url' => $config->banner_bg_url,
             ...$config->resolvedPageContent(),
-        ];
+        ]);
         $siteKey = config('services.recaptcha.site_key');
         if (! empty($siteKey)) {
             $payload['recaptcha_site_key'] = $siteKey;
@@ -173,6 +174,6 @@ class ConfigController extends Controller
 
         $path = $file->storeAs('uploads', $name, 'public');
 
-        return Storage::disk('public')->url($path);
+        return PublicAssetUrl::fromPublicDiskPath($request, $path);
     }
 }

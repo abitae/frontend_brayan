@@ -26,7 +26,8 @@ export default function AgenciesSection({
   ctaButtonLabel,
   agencies,
 }: AgenciesSectionProps) {
-  const list = agencies && agencies.length > 0 ? agencies : AGENCIES;
+  /** Lista guardada en panel: si viene array (aunque vacío), se usa tal cual; si no hay dato, fallback demo. */
+  const list: AgencyConfigItem[] = Array.isArray(agencies) ? agencies : AGENCIES;
   const title = introTitle ?? DEFAULT_INTRO_TITLE;
   const subtitle = introSubtitle ?? DEFAULT_INTRO_SUB;
   const bannerTitle = ctaTitle ?? DEFAULT_CTA_TITLE;
@@ -41,34 +42,43 @@ export default function AgenciesSection({
           <p className="text-slate-600">{subtitle}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {list.map((agency) => (
-            <div
-              key={agency.id}
-              className="bg-slate-50 border border-slate-100 p-8 rounded-3xl hover:bg-emerald-50 hover:border-emerald-200 transition-all group"
-            >
-              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-emerald-600 mb-6 shadow-sm group-hover:scale-110 transition-transform">
-                <ICONS.Globe />
-              </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">{agency.name}</h3>
-              <p className="text-slate-500 text-sm mb-4 min-h-[40px]">
-                {agency.address}, {agency.city}
-              </p>
-              <div className="flex items-center gap-2 text-emerald-700 font-bold text-sm mb-6">
-                <span>📞</span> {agency.phone}
-              </div>
-              <button
-                type="button"
-                onClick={() =>
-                  window.open(`https://www.google.com/maps/search/?api=1&query=${agency.lat},${agency.lng}`)
-                }
-                className="w-full bg-white text-emerald-600 border border-emerald-100 py-3 rounded-xl font-bold hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
+        {list.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50/80 py-16 px-6 text-center">
+            <p className="text-slate-600 font-medium">No hay agencias publicadas.</p>
+            <p className="text-sm text-slate-500 mt-2">
+              Puedes añadirlas desde el panel administrativo en la sección Agencias.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {list.map((agency, idx) => (
+              <div
+                key={`${agency.id}-${idx}`}
+                className="bg-slate-50 border border-slate-100 p-8 rounded-3xl hover:bg-emerald-50 hover:border-emerald-200 transition-all group"
               >
-                Ver en Mapa
-              </button>
-            </div>
-          ))}
-        </div>
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-emerald-600 mb-6 shadow-sm group-hover:scale-110 transition-transform">
+                  <ICONS.Globe />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">{agency.name}</h3>
+                <p className="text-slate-500 text-sm mb-4 min-h-[40px]">
+                  {agency.address}, {agency.city}
+                </p>
+                <div className="flex items-center gap-2 text-emerald-700 font-bold text-sm mb-6">
+                  <span>📞</span> {agency.phone}
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    window.open(`https://www.google.com/maps/search/?api=1&query=${agency.lat},${agency.lng}`)
+                  }
+                  className="w-full bg-white text-emerald-600 border border-emerald-100 py-3 rounded-xl font-bold hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
+                >
+                  Ver en Mapa
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="mt-20 bg-emerald-900 rounded-[40px] p-12 text-white relative overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/20 rounded-full blur-[100px]" />

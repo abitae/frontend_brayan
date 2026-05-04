@@ -8,14 +8,23 @@ use App\Models\ProhibitedCategory;
 use App\Models\Quote;
 use App\Models\Service;
 use App\Models\SiteConfig;
+use App\Support\PublicAssetUrl;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AdminController extends Controller
 {
+    private const ADMIN_TABS = [
+        'branding', 'servicios', 'nosotros', 'agencias',
+        'precios', 'cotizador', 'cotizaciones', 'prohibiciones', 'gemini',
+    ];
+
     public function __invoke(): Response
     {
         $config = SiteConfig::default();
+
+        $requestedTab = request()->query('tab', 'branding');
+        $initialAdminTab = in_array($requestedTab, self::ADMIN_TABS, true) ? $requestedTab : 'branding';
 
         $quotes = Quote::orderByDesc('created_at')->get()->map(fn ($q) => [
             'id' => $q->id,
@@ -30,7 +39,8 @@ class AdminController extends Controller
         ])->values()->all();
 
         return Inertia::render('brayan-brush/admin', [
-            'config' => [
+            'initialAdminTab' => $initialAdminTab,
+            'config' => PublicAssetUrl::normalizeSiteMediaUrls([
                 'company_name' => $config->company_name,
                 'logo_text' => $config->logo_text,
                 'hero_title' => $config->hero_title,
@@ -55,7 +65,7 @@ class AdminController extends Controller
                 'openai_enabled' => (bool) ($config->openai_enabled ?? true),
                 'openai_has_api_key' => ! empty($config->openai_api_key),
                 ...$config->resolvedPageContent(),
-            ],
+            ]),
             'services' => Service::listForFront()->values()->all(),
             'prohibitedCategories' => ProhibitedCategory::listForAdmin()->values()->all(),
             'quotes' => $quotes,
