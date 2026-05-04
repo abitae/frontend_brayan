@@ -54,6 +54,7 @@ class AdminController extends Controller
                 'openai_system_instruction' => $config->openai_system_instruction,
                 'openai_enabled' => (bool) ($config->openai_enabled ?? true),
                 'openai_has_api_key' => ! empty($config->openai_api_key),
+                ...$config->resolvedPageContent(),
             ],
             'services' => Service::listForFront()->values()->all(),
             'prohibitedCategories' => ProhibitedCategory::listForAdmin()->values()->all(),

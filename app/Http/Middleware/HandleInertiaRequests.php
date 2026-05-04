@@ -48,6 +48,7 @@ class HandleInertiaRequests extends Middleware
                 'logo_url' => $config->logo_url,
                 'banner_url' => $config->banner_url,
                 'banner_bg_url' => $config->banner_bg_url,
+                ...$config->resolvedPageContent(),
             ];
         } catch (\Throwable) {
             // Tables may not exist yet during migrations

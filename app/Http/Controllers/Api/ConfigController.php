@@ -26,6 +26,7 @@ class ConfigController extends Controller
             'logo_url' => $config->logo_url,
             'banner_url' => $config->banner_url,
             'banner_bg_url' => $config->banner_bg_url,
+            ...$config->resolvedPageContent(),
         ];
         $siteKey = config('services.recaptcha.site_key');
         if (! empty($siteKey)) {
@@ -64,6 +65,25 @@ class ConfigController extends Controller
             'openai_model' => 'nullable|string|max:64',
             'openai_system_instruction' => 'nullable|string|max:8000',
             'openai_enabled' => 'nullable|boolean',
+            'about_title_prefix' => 'nullable|string|max:500',
+            'about_title_highlight' => 'nullable|string|max:120',
+            'about_title_suffix' => 'nullable|string|max:120',
+            'about_paragraph_1' => 'nullable|string|max:8000',
+            'about_paragraph_2' => 'nullable|string|max:8000',
+            'about_image_url' => 'nullable|string|max:2000',
+            'agencies_intro_title' => 'nullable|string|max:255',
+            'agencies_intro_subtitle' => 'nullable|string|max:500',
+            'agencies_cta_title' => 'nullable|string|max:255',
+            'agencies_cta_text' => 'nullable|string|max:8000',
+            'agencies_cta_button_label' => 'nullable|string|max:120',
+            'agencies_list' => 'nullable|array|max:100',
+            'agencies_list.*.id' => 'required|string|max:64',
+            'agencies_list.*.name' => 'required|string|max:255',
+            'agencies_list.*.address' => 'required|string|max:500',
+            'agencies_list.*.city' => 'required|string|max:120',
+            'agencies_list.*.phone' => 'required|string|max:80',
+            'agencies_list.*.lat' => 'required|numeric',
+            'agencies_list.*.lng' => 'required|numeric',
         ]);
 
         $config = SiteConfig::default();
@@ -124,6 +144,19 @@ class ConfigController extends Controller
 
         $config = SiteConfig::default();
         $config->update(['banner_bg_url' => $url]);
+
+        return response()->json(['url' => $url]);
+    }
+
+    /**
+     * Imagen de la página Nosotros (auth).
+     */
+    public function uploadAboutImage(Request $request): JsonResponse
+    {
+        $url = $this->uploadFile($request, 'about');
+
+        $config = SiteConfig::default();
+        $config->update(['about_image_url' => $url]);
 
         return response()->json(['url' => $url]);
     }

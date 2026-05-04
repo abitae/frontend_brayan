@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/config/upload-logo', [ConfigController::class, 'uploadLogo']);
     Route::post('/config/upload-banner', [ConfigController::class, 'uploadBanner']);
     Route::post('/config/upload-banner-bg', [ConfigController::class, 'uploadBannerBg']);
+    Route::post('/config/upload-about-image', [ConfigController::class, 'uploadAboutImage']);
 
     Route::post('/services', [ServiceController::class, 'store']);
     Route::put('/services/{service}', [ServiceController::class, 'update']);

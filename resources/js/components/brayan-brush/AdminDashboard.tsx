@@ -4,8 +4,10 @@ import { Link, router } from '@inertiajs/react';
 import {
   Ban,
   Bot,
+  Building2,
   FileText,
   LogOut,
+  MapPin,
   Palette,
   Receipt,
   Route,
@@ -28,12 +30,14 @@ import {
   updateProhibitedItem,
   updateQuote,
   updateService,
+  uploadAboutImage,
   uploadBanner,
   uploadBannerBg,
   uploadLogo,
   uploadServiceImage,
 } from '@/api/brayan-api';
 import type {
+  AgencyConfigItem,
   PricingRouteItem,
   ProhibitedCategoryAdmin,
   QuoteItem,
@@ -102,18 +106,25 @@ export default function AdminDashboard({
 
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    type: 'logo' | 'banner' | 'banner_bg'
+    type: 'logo' | 'banner' | 'banner_bg' | 'about_image'
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(type);
     try {
       const res =
-        type === 'logo' ? await uploadLogo(file) : type === 'banner' ? await uploadBanner(file) : await uploadBannerBg(file);
+        type === 'logo'
+          ? await uploadLogo(file)
+          : type === 'banner'
+            ? await uploadBanner(file)
+            : type === 'banner_bg'
+              ? await uploadBannerBg(file)
+              : await uploadAboutImage(file);
       const url = res?.url ?? null;
       if (type === 'logo') setLocalConfig((c) => ({ ...c, logo_url: url }));
       else if (type === 'banner') setLocalConfig((c) => ({ ...c, banner_url: url }));
-      else setLocalConfig((c) => ({ ...c, banner_bg_url: url }));
+      else if (type === 'banner_bg') setLocalConfig((c) => ({ ...c, banner_bg_url: url }));
+      else setLocalConfig((c) => ({ ...c, about_image_url: url }));
     } catch (err) {
       Swal.fire({ icon: 'error', title: 'Error', text: err instanceof Error ? err.message : 'Error al subir el archivo.', toast: true, position: 'top-end', timer: 4000, showConfirmButton: false });
     } finally {
@@ -132,6 +143,94 @@ export default function AdminDashboard({
     } finally {
       setSaving(false);
     }
+  };
+
+  const saveNosotrosPage = async () => {
+    setSaving(true);
+    try {
+      await updateConfig(localConfig);
+      Swal.fire({
+        icon: 'success',
+        text: 'Página Nosotros guardada.',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err instanceof Error ? err.message : 'Error al guardar.',
+        toast: true,
+        position: 'top-end',
+        timer: 4000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const saveAgenciasPage = async () => {
+    setSaving(true);
+    try {
+      await updateConfig(localConfig);
+      Swal.fire({
+        icon: 'success',
+        text: 'Página Agencias guardada.',
+        toast: true,
+        position: 'top-end',
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err instanceof Error ? err.message : 'Error al guardar.',
+        toast: true,
+        position: 'top-end',
+        timer: 4000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const patchAgency = (index: number, patch: Partial<AgencyConfigItem>) => {
+    setLocalConfig((c) => {
+      const list = [...(c.agencies_list ?? [])];
+      if (!list[index]) return c;
+      list[index] = { ...list[index], ...patch };
+      return { ...c, agencies_list: list };
+    });
+  };
+
+  const addAgencyRow = () => {
+    setLocalConfig((c) => ({
+      ...c,
+      agencies_list: [
+        ...(c.agencies_list ?? []),
+        {
+          id: `n-${Date.now()}`,
+          name: 'Nueva agencia',
+          address: '',
+          city: '',
+          phone: '',
+          lat: -12.0464,
+          lng: -77.0428,
+        },
+      ],
+    }));
+  };
+
+  const removeAgencyRow = (index: number) => {
+    setLocalConfig((c) => ({
+      ...c,
+      agencies_list: (c.agencies_list ?? []).filter((_, i) => i !== index),
+    }));
   };
 
   const saveAssistant = async () => {
@@ -364,6 +463,8 @@ export default function AdminDashboard({
               {[
                 { id: 'branding', label: 'Branding & Media', Icon: Palette },
                 { id: 'servicios', label: 'Servicios', Icon: Wrench },
+                { id: 'nosotros', label: 'Página Nosotros', Icon: Building2 },
+                { id: 'agencias', label: 'Página Agencias', Icon: MapPin },
               ].map((tab) => {
                 const Icon = tab.Icon;
                 const active = activeTab === tab.id;
@@ -676,6 +777,231 @@ export default function AdminDashboard({
                     Agregar servicio
                   </button>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'nosotros' && (
+              <div className="space-y-8">
+                <h3 className="text-2xl font-black">Página Nosotros</h3>
+                <p className="text-sm text-slate-600">
+                  Título en tres partes (la parte central se muestra en verde). En los párrafos puedes usar{' '}
+                  <code className="text-xs bg-slate-100 px-1 rounded">{'{{empresa}}'}</code> para insertar el nombre de
+                  la empresa.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Título (antes)</label>
+                    <input
+                      type="text"
+                      value={localConfig.about_title_prefix ?? ''}
+                      onChange={(e) => setLocalConfig({ ...localConfig, about_title_prefix: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Título (acento)</label>
+                    <input
+                      type="text"
+                      value={localConfig.about_title_highlight ?? ''}
+                      onChange={(e) => setLocalConfig({ ...localConfig, about_title_highlight: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Título (después)</label>
+                    <input
+                      type="text"
+                      value={localConfig.about_title_suffix ?? ''}
+                      onChange={(e) => setLocalConfig({ ...localConfig, about_title_suffix: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Párrafo 1</label>
+                  <textarea
+                    rows={4}
+                    value={localConfig.about_paragraph_1 ?? ''}
+                    onChange={(e) => setLocalConfig({ ...localConfig, about_paragraph_1: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Párrafo 2</label>
+                  <textarea
+                    rows={4}
+                    value={localConfig.about_paragraph_2 ?? ''}
+                    onChange={(e) => setLocalConfig({ ...localConfig, about_paragraph_2: e.target.value })}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Imagen lateral</label>
+                  <div className="flex flex-col sm:flex-row gap-4 items-start bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    {localConfig.about_image_url && (
+                      <img
+                        src={localConfig.about_image_url}
+                        alt=""
+                        className="w-full sm:w-48 h-32 object-cover rounded-xl border border-slate-200"
+                      />
+                    )}
+                    <div>
+                      <input
+                        type="file"
+                        accept=".png,.jpg,.jpeg,.webp"
+                        onChange={(e) => handleFileUpload(e, 'about_image')}
+                        className="text-xs text-slate-600"
+                        disabled={!!uploading}
+                      />
+                      {uploading === 'about_image' && <p className="text-xs text-slate-500 mt-2">Subiendo…</p>}
+                    </div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={saveNosotrosPage}
+                  disabled={saving}
+                  className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold disabled:opacity-50"
+                >
+                  {saving ? 'Guardando…' : 'Guardar página Nosotros'}
+                </button>
+              </div>
+            )}
+
+            {activeTab === 'agencias' && (
+              <div className="space-y-8">
+                <h3 className="text-2xl font-black">Página Agencias</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Título principal</label>
+                    <input
+                      type="text"
+                      value={localConfig.agencies_intro_title ?? ''}
+                      onChange={(e) => setLocalConfig({ ...localConfig, agencies_intro_title: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Subtítulo</label>
+                    <input
+                      type="text"
+                      value={localConfig.agencies_intro_subtitle ?? ''}
+                      onChange={(e) => setLocalConfig({ ...localConfig, agencies_intro_subtitle: e.target.value })}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+                </div>
+                <div className="border-t border-slate-100 pt-8 space-y-4">
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Bloque inferior (CTA)</p>
+                  <input
+                    type="text"
+                    value={localConfig.agencies_cta_title ?? ''}
+                    onChange={(e) => setLocalConfig({ ...localConfig, agencies_cta_title: e.target.value })}
+                    placeholder="Título"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                  <textarea
+                    rows={3}
+                    value={localConfig.agencies_cta_text ?? ''}
+                    onChange={(e) => setLocalConfig({ ...localConfig, agencies_cta_text: e.target.value })}
+                    placeholder="Texto"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                  <input
+                    type="text"
+                    value={localConfig.agencies_cta_button_label ?? ''}
+                    onChange={(e) => setLocalConfig({ ...localConfig, agencies_cta_button_label: e.target.value })}
+                    placeholder="Texto del botón"
+                    className="w-full max-w-md bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+                <div className="border-t border-slate-100 pt-8 space-y-4">
+                  <div className="flex justify-between items-center flex-wrap gap-4">
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Agencias en tarjetas</p>
+                    <button
+                      type="button"
+                      onClick={addAgencyRow}
+                      className="text-sm font-bold text-emerald-600 hover:underline"
+                    >
+                      + Agregar agencia
+                    </button>
+                  </div>
+                  {(localConfig.agencies_list ?? []).map((agency, index) => (
+                    <div key={agency.id} className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
+                      <div className="flex justify-between items-center gap-2">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase">Agencia {index + 1}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeAgencyRow(index)}
+                          className="text-xs font-bold text-rose-500 hover:underline"
+                        >
+                          Quitar
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <input
+                          type="text"
+                          value={agency.name}
+                          onChange={(e) => patchAgency(index, { name: e.target.value })}
+                          placeholder="Nombre"
+                          className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm"
+                        />
+                        <input
+                          type="text"
+                          value={agency.phone}
+                          onChange={(e) => patchAgency(index, { phone: e.target.value })}
+                          placeholder="Teléfono"
+                          className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm"
+                        />
+                        <input
+                          type="text"
+                          value={agency.address}
+                          onChange={(e) => patchAgency(index, { address: e.target.value })}
+                          placeholder="Dirección"
+                          className="md:col-span-2 bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm"
+                        />
+                        <input
+                          type="text"
+                          value={agency.city}
+                          onChange={(e) => patchAgency(index, { city: e.target.value })}
+                          placeholder="Ciudad"
+                          className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm"
+                        />
+                        <input
+                          type="text"
+                          value={agency.id}
+                          onChange={(e) => patchAgency(index, { id: e.target.value })}
+                          placeholder="ID interno (slug)"
+                          className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm"
+                        />
+                        <input
+                          type="number"
+                          step="any"
+                          value={agency.lat}
+                          onChange={(e) => patchAgency(index, { lat: parseFloat(e.target.value) || 0 })}
+                          placeholder="Latitud"
+                          className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm"
+                        />
+                        <input
+                          type="number"
+                          step="any"
+                          value={agency.lng}
+                          onChange={(e) => patchAgency(index, { lng: parseFloat(e.target.value) || 0 })}
+                          placeholder="Longitud"
+                          className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={saveAgenciasPage}
+                  disabled={saving}
+                  className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold disabled:opacity-50"
+                >
+                  {saving ? 'Guardando…' : 'Guardar página Agencias'}
+                </button>
               </div>
             )}
 

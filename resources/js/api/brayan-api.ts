@@ -58,6 +58,16 @@ async function uploadFile(path: string, file: File): Promise<{ url: string }> {
   return res.json();
 }
 
+export interface AgencyConfigItem {
+  id: string;
+  name: string;
+  address: string;
+  city: string;
+  phone: string;
+  lat: number;
+  lng: number;
+}
+
 export interface SiteConfig {
   company_name: string;
   logo_text: string;
@@ -85,6 +95,20 @@ export interface SiteConfig {
   calculator_default_width?: number;
   calculator_default_height?: number;
   recaptcha_site_key?: string | null;
+  /** Página Nosotros */
+  about_title_prefix?: string | null;
+  about_title_highlight?: string | null;
+  about_title_suffix?: string | null;
+  about_paragraph_1?: string | null;
+  about_paragraph_2?: string | null;
+  about_image_url?: string | null;
+  /** Página Agencias */
+  agencies_intro_title?: string | null;
+  agencies_intro_subtitle?: string | null;
+  agencies_cta_title?: string | null;
+  agencies_cta_text?: string | null;
+  agencies_cta_button_label?: string | null;
+  agencies_list?: AgencyConfigItem[] | null;
 }
 
 export interface TrackingResult {
@@ -153,6 +177,10 @@ export async function uploadBanner(file: File): Promise<{ url: string }> {
 
 export async function uploadBannerBg(file: File): Promise<{ url: string }> {
   return uploadFile('/api/config/upload-banner-bg', file);
+}
+
+export async function uploadAboutImage(file: File): Promise<{ url: string }> {
+  return uploadFile('/api/config/upload-about-image', file);
 }
 
 export async function assistantChat(message: string): Promise<string> {
